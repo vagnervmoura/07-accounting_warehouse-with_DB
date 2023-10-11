@@ -1,12 +1,24 @@
-"""
-def load_balance(balance="../db/balance.txt"):
-    with open(balance, "a") as file:  # To create a new file in case it not exist.
-        pass
+#actual_balance = float(0)
 
-    with open(balance) as file:
+def load_balance(balance="./db/balance.txt"):
+#    global actual_balance
+#    with open(balance, "a") as file:  # To create a new file in case it not exist.
+#        pass
+    with open(balance, "r") as file:
         for row in file:
-            account = float(row)
-            #print(account)
-    return
-load_balance()
+            actual_balance = float(row)
+            #print(actual_balance)
+    return actual_balance
+#load_balance()
+
+
+"""
+balance="../db/balance.txt"
+def load_balance():
+#    balance = "../db/blance.txt"
+    print(balance)
+    with open(balance, "r") as file:
+        for row in file:
+            actual_balance = float(row)
+            print(actual_balance)
 """

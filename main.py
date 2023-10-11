@@ -24,6 +24,7 @@ Hints:
 
 import sys
 #from modules.test_functions import save_balance
+#from modules.database import load_balance
 
 v_option = None
 v_balance = 0
@@ -34,36 +35,48 @@ v_list = None
 v_quantity = 0
 v_warehouse = []
 v_review = []
+#from modules.database import actual_balance
+
+balance="db/balance.txt" # Set balance from a Database File
 
 def goto(linenum):
     global line
     line = linenum
-    
+
+
 # 'balance': The program will prompt for an amount to add or subtract from the account.
 def f_balance(): 
     global v_balance
     global v_review
+#    global actual_balance
+#    global balance
+    with open(balance, "r") as file:
+        for row in file:
+            actual_balance = float(row)
     try:
+#        load_balance()
+#        print(actual_balance)
         v_action = int(input("Press '1' to Add or press '2' to Subtract: "))
         if v_action != 1 and v_action != 2:
             print("Sorry {} is not a valid option.\n".format(v_action))
         else:
             v_value = float(input("Insert the amount to your balance: "))
             if v_action == 1:
-                v_balance += v_value
-                print("Your new balance is: {}".format(v_balance))
+                actual_balance += v_value
+                #v_balance += v_value
+                print("Your new balance is: {}".format(actual_balance))
                 v_review.append("Balance changed, added: {}".format(v_value))
             elif v_action == 2:
-                if v_value <= v_balance:
-                    v_balance -= v_value
-                    print("Your new balance is: {}".format(v_balance))
+                if v_value <= actual_balance:
+                    actual_balance -= v_value
+                    print("Your new balance is: {}".format(actual_balance))
                     v_review.append("Balance changed, subtracted: {}".format(v_value))
                 else:
-                    print("Sorry, you do not have balance enough to do this withdraw.\nYour actual balance is {}.".format(v_balance))         
-            balance="db/balance.txt" # Set balance from a Database File
-            new_balance = str(v_balance) # save the balance as string to send to DB File.
+                    print("Sorry, you do not have balance enough to do this withdraw.\nYour actual balance is {}.".format(v_balance))
+            new_balance = str(actual_balance) # save the balance as string to send to DB File.
             with open(balance, "w") as file:  # To create a new file in case it not exist and write on.
                 file.write(new_balance)
+                file.close()
     except ValueError:
         print("Sorry {} is not a valid value.\n".format(v_value))
 
@@ -75,6 +88,11 @@ def f_sale():
     global v_quantity
     global v_warehouse
     global v_review
+
+    with open(balance, "r") as file:
+        for row in file:
+            actual_balance = float(row)
+        
     try:
         v_name = str(input("Insert the name of product to sell: "))
         for sale in v_warehouse:
@@ -84,8 +102,9 @@ def f_sale():
                     v_sale = int(input("Insert the quantity of {} to sell: ".format(v_name)))
                     if sale["v_quantity"] >= v_sale:
                         sale["v_quantity"] -= v_sale
-                        v_balance += sale["v_price"] * v_sale
-                        print("Your new balance is: {}\nYour new quantity of {} is {}\n".format(v_balance, v_name, sale["v_quantity"]))
+                        actual_balance += sale["v_price"] * v_sale
+                        #v_balance += sale["v_price"] * v_sale
+                        print("Your new balance is: {}\nYour new quantity of {} is {}\n".format(actual_balance, v_name, sale["v_quantity"]))
                         v_review.append("Sale made, sold: {} of {} by a total of: {}".format(v_sale, v_name, sale["v_price"] * v_sale))
                     
                     else:
@@ -97,6 +116,11 @@ def f_sale():
             else:
                 print("Sorry, we do not have {} in our warehouse.\n".format(v_name))
 
+            new_balance = str(actual_balance) # save the balance as string to send to DB File.
+            with open(balance, "w") as file:  # To create a new file in case it not exist and write on.
+                file.write(new_balance)
+                file.close()
+                
     except ValueError:
         print("Sorry, you did not input a valid value.\n")        
 
@@ -108,13 +132,18 @@ def f_purchase():
     global v_balance
     global v_warehouse
     global v_review
+    
+    with open(balance, "r") as file:
+        for row in file:
+            actual_balance = float(row)
+            
     try:
         v_name = str(input("Insert the name of product: "))
         v_price = float(input("Insert the unit price of {}: ".format(v_name)))
         v_quantity = int(input("Insert the quantity of {}: ".format(v_name)))
         
         total_price = v_price * v_quantity
-        if total_price > v_balance:
+        if total_price > actual_balance:
             print("Sorry, you do not have balance enough to do this purchase.\nYour actual balance is {}.".format(v_balance))
         else:       
             for purchase in v_purchase:
@@ -126,22 +155,34 @@ def f_purchase():
             else:
                 v_purchase.append({"v_name": v_name, "v_price": v_price, "v_quantity": v_quantity})
                 v_review.append("Purchase made, added: {} of {} by a total of: {}".format(v_quantity, v_name, total_price))
-            v_balance -= total_price
-            print("Your new balance is: {}".format(v_balance))
+            actual_balance -= total_price
+            print("Your new balance is: {}".format(actual_balance))
             
         print(*v_purchase, sep = "\n")
         v_warehouse = v_purchase
         print(id(v_name))
+        
+        new_balance = str(actual_balance) # save the balance as string to send to DB File.
+        with open(balance, "w") as file:  # To create a new file in case it not exist and write on.
+            file.write(new_balance)
+            file.close()
+                
     except ValueError:
         print("Sorry, you did not input a valid value.\n")
 
 # 'account': Display the current account balance.
 def f_account():
     global v_account
+    
+    with open(balance, "r") as file:
+        for row in file:
+            actual_balance = float(row)
+            
     if v_account == []:
         print("The account is empty.\n")
     else:
-        print("Your actual balance is: {}".format(v_balance))
+        print("Your actual balance is: {}".format(actual_balance))
+    file.close()
 
 # 'list': Display the total inventory in the warehouse along with product prices and quantities.
 def f_list():
