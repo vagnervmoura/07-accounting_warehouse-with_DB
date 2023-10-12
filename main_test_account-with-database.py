@@ -132,39 +132,6 @@ def f_sale():
             file.close()          
     except ValueError:
         print("Sorry, you did not input a valid value.\n")
-
-"""        
-    try:
-        v_name = str(input("Insert the name of product to sell: "))
-        for sale in v_warehouse:
-            if sale["v_name"] == v_name:
-                print("The price of {} is {}\nWe have {} in our warehouse.\n".format(v_name, sale["v_price"], sale["v_quantity"]))
-                try:
-                    v_sale = int(input("Insert the quantity of {} to sell: ".format(v_name)))
-                    if sale["v_quantity"] >= v_sale:
-                        sale["v_quantity"] -= v_sale
-                        actual_balance += sale["v_price"] * v_sale
-                        #v_balance += sale["v_price"] * v_sale
-                        print("Your new balance is: {}\nYour new quantity of {} is {}\n".format(actual_balance, v_name, sale["v_quantity"]))
-                        v_review.append("Sale made, sold: {} of {} by a total of: {}".format(v_sale, v_name, sale["v_price"] * v_sale))
-                    
-                    else:
-                        print("Sorry, you do not have enough {} to sell.\n".format(v_name)) 
-                
-                except ValueError:
-                    print("Sorry, you did not input a valid value.\n") 
-                
-            else:
-                print("Sorry, we do not have {} in our warehouse.\n".format(v_name))
-
-            new_balance = str(actual_balance) # save the balance as string to send to DB File.
-            with open(balance, "w") as file:  # To create a new file in case it not exist and write on.
-                file.write(new_balance)
-                file.close()
-                
-    except ValueError:
-        print("Sorry, you did not input a valid value.\n")        
-"""
     
 # 'purchase': The program should prompt for the name of the product, its price, and quantity. Perform necessary calculations and update the account and warehouse accordingly. 
 #             Ensure that the account balance is not negative after a purchase operation.    
@@ -245,19 +212,28 @@ def f_list():
 
 # 'warehouse': Prompt for a product name and display its status in the warehouse.
 def f_warehouse():
-    global v_warehouse
-    if v_warehouse == []:
-        print("The warehouse is empty.\n")
-    try:
-        v_name = str(input("Insert the name of product to check in Warehouse: "))
-        for warehouse in v_warehouse:
-            if warehouse["v_name"] == v_name:
-                print("The {} is Available in Warehouse.\nHave {} itens in Warehouse.\nAnd its price is {}\n".format(v_name, warehouse["v_quantity"], warehouse["v_price"]))            
-            elif warehouse["v_name"] not in v_name:
-                print("Sorry, we do not have {} in our warehouse.\n".format(v_name))
+    new_warehouse = {}  
+    with open(warehouse, "a") as file: # To create a new file in case it not exist.
+        pass 
+    with open(warehouse) as file:
+        for row in file:
+            v_name, v_price, v_quantity = row.strip().split(";")
+            v_price = float(v_price)
+            v_quantity = int(v_quantity)
+            if v_name in new_warehouse:
+                print(f"WARNING: duplicate value of {v_name}")
+            new_warehouse[v_name] = {
+                "v_price": v_price,
+                "v_quantity": v_quantity
+            }
+            
+        s_name = str(input("Insert the name of product: "))
+        if (s_name not in new_warehouse):
+            print("Sorry, {} not available on Warehouse.\n".format(s_name))
+            return
+        print("\n\nThe {} is Available in Warehouse.\nHave {} itens in Warehouse.\nAnd its price is {}\n".format(s_name, new_warehouse[s_name]["v_quantity"], new_warehouse[s_name]["v_price"]))
+    file.close()      
 
-    except ValueError:
-        print("Sorry, you did not input a valid value.\n")  
 
 # 'review': Prompt for two indices 'from' and 'to', and display all recorded operations within that range. 
 #           If ‘from’ and ‘to’ are empty, display all recorder operations. 
