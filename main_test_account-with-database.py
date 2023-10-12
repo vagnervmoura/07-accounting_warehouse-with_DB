@@ -38,6 +38,7 @@ v_review = []
 #from modules.database import actual_balance
 
 balance="db/balance.txt" # Set balance from a Database File
+warehouse="db/warehouse.txt" # Set warehouse to Database File
 
 def goto(linenum):
     global line
@@ -48,14 +49,11 @@ def goto(linenum):
 def f_balance(): 
     global v_balance
     global v_review
-#    global actual_balance
-#    global balance
+    
     with open(balance, "r") as file:
         for row in file:
-            actual_balance = float(row)
+            actual_balance = float(row)         
     try:
-#        load_balance()
-#        print(actual_balance)
         v_action = int(input("Press '1' to Add or press '2' to Subtract: "))
         if v_action != 1 and v_action != 2:
             print("Sorry {} is not a valid option.\n".format(v_action))
@@ -63,7 +61,6 @@ def f_balance():
             v_value = float(input("Insert the amount to your balance: "))
             if v_action == 1:
                 actual_balance += v_value
-                #v_balance += v_value
                 print("Your new balance is: {}".format(actual_balance))
                 v_review.append("Balance changed, added: {}".format(v_value))
             elif v_action == 2:
@@ -136,6 +133,24 @@ def f_purchase():
     with open(balance, "r") as file:
         for row in file:
             actual_balance = float(row)
+    
+    new_warehouse = {}  
+    with open(warehouse, "a") as file: # To create a new file in case it not exist.
+        pass 
+    with open(warehouse) as file:
+        for row in file:
+#            print(new_warehouse)
+            v_name, v_price, v_quantity = row.strip().split(";")
+            v_price = float(v_price)
+            v_quantity = int(v_quantity)
+            if v_name in new_warehouse:
+                print(f"WARNING: duplicate value of {v_name}")
+            new_warehouse[v_name] = {
+                "v_price": v_price,
+                "v_quantity": v_quantity
+            }
+    print(new_warehouse)
+#    return new_warehouse
             
     try:
         v_name = str(input("Insert the name of product: "))
@@ -145,28 +160,38 @@ def f_purchase():
         total_price = v_price * v_quantity
         if total_price > actual_balance:
             print("Sorry, you do not have balance enough to do this purchase.\nYour actual balance is {}.".format(v_balance))
-        else:       
-            for purchase in v_purchase:
-                if purchase["v_name"] == v_name:
-                    purchase["v_price"] = v_price
-                    purchase["v_quantity"] += v_quantity
-                    v_review.append("Purchase made, added: {} of {} by a total of: {}".format(v_quantity, v_name, total_price))
-                    break     
-            else:
-                v_purchase.append({"v_name": v_name, "v_price": v_price, "v_quantity": v_quantity})
-                v_review.append("Purchase made, added: {} of {} by a total of: {}".format(v_quantity, v_name, total_price))
-            actual_balance -= total_price
-            print("Your new balance is: {}".format(actual_balance))
-            
-        print(*v_purchase, sep = "\n")
-        v_warehouse = v_purchase
-        print(id(v_name))
+        else:   
+#            if v_name not in warehouse:
+#                print("DENTRO IF")
+            new_warehouse[v_name] = {"v_price": 0.0, "v_quantity": 0}
+#            print("FORA")
+            new_warehouse[v_name]["v_price"] = v_price
+            new_warehouse[v_name]["v_quantity"] = v_quantity    
+#            for purchase in v_purchase:
+#                if purchase["v_name"] == v_name:
+#                    purchase["v_price"] = v_price
+#                    purchase["v_quantity"] += v_quantity
+#                    v_review.append("Purchase made, added: {} of {} by a total of: {}".format(v_quantity, v_name, total_price))
+#                    break     
+#            else:
+#                v_purchase.append({"v_name": v_name, "v_price": v_price, "v_quantity": v_quantity})
+#                v_review.append("Purchase made, added: {} of {} by a total of: {}".format(v_quantity, v_name, total_price))
+#            actual_balance -= total_price
+#            print("Your new balance is: {}".format(actual_balance))
+#            
+#        print(*v_purchase, sep = "\n")
+#        new_warehouse = v_purchase
+#        print(id(v_name))
         
         new_balance = str(actual_balance) # save the balance as string to send to DB File.
         with open(balance, "w") as file:  # To create a new file in case it not exist and write on.
             file.write(new_balance)
             file.close()
-                
+        with open(warehouse, "a") as file:  # To create a new file in case it not exist and write on.
+            #for row in file:
+            for row in new_warehouse:
+                file.write("{};{};{}\n".format(v_name, v_price, v_quantity))
+            file.close()          
     except ValueError:
         print("Sorry, you did not input a valid value.\n")
 
