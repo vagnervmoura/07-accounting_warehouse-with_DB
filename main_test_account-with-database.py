@@ -89,7 +89,51 @@ def f_sale():
     with open(balance, "r") as file:
         for row in file:
             actual_balance = float(row)
+
+    new_warehouse = {}  
+    with open(warehouse, "a") as file: # To create a new file in case it not exist.
+        pass 
+    with open(warehouse) as file:
+        for row in file:
+            v_name, v_price, v_quantity = row.strip().split(";")
+            v_price = float(v_price)
+            v_quantity = int(v_quantity)
+            if v_name in new_warehouse:
+                print(f"WARNING: duplicate value of {v_name}")
+            new_warehouse[v_name] = {
+                "v_price": v_price,
+                "v_quantity": v_quantity
+            }
+    print(new_warehouse)
+            
+    try:
+        s_name = str(input("Insert the name of product: "))
+        if (s_name not in new_warehouse):# or (new_warehouse["v_quantity"] <1):
+            print("Sorry, {} not available on Warehouse.\n".format(s_name))
+            return
+        s_quantity = int(input("Insert the quantity of {} to sell: ".format(v_name)))
+        if s_quantity > new_warehouse[s_name]["v_quantity"]:
+            print("Sorry, you do not have enough {} to sell.\n".format(v_name))
+            return
+        new_warehouse[s_name]["v_quantity"] -= s_quantity
+        total_price = v_price * s_quantity
+        actual_balance += total_price
+        if new_warehouse[s_name]["v_quantity"] == 0:
+            del(new_warehouse[s_name])
+            print(f"Last {s_name} sold, deleting from warehouse.")
         
+        new_balance = str(actual_balance) # save the balance as string to send to DB File.
+        with open(balance, "w") as file:  # To create a new file in case it not exist and write on.
+            file.write(new_balance)
+            file.close()
+        with open(warehouse, "w") as file:  # To create a new file in case it not exist and write on.
+            for v_name, stats in new_warehouse.items():
+                file.write("{};{};{}\n".format(v_name, stats["v_price"], stats["v_quantity"]))
+            file.close()          
+    except ValueError:
+        print("Sorry, you did not input a valid value.\n")
+
+"""        
     try:
         v_name = str(input("Insert the name of product to sell: "))
         for sale in v_warehouse:
@@ -120,7 +164,7 @@ def f_sale():
                 
     except ValueError:
         print("Sorry, you did not input a valid value.\n")        
-
+"""
     
 # 'purchase': The program should prompt for the name of the product, its price, and quantity. Perform necessary calculations and update the account and warehouse accordingly. 
 #             Ensure that the account balance is not negative after a purchase operation.    
