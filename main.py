@@ -203,12 +203,29 @@ def f_account():
 
 # 'list': Display the total inventory in the warehouse along with product prices and quantities.
 def f_list():
-    global v_list
-    global v_warehouse
-    if v_warehouse == []:
-        print("The warehouse is empty.\n")
-    else:
-        print(*v_warehouse, sep = "\n")  
+    new_warehouse = {}  
+    with open(warehouse, "a") as file: # To create a new file in case it not exist.
+        pass 
+    with open(warehouse) as file:
+        for row in file:
+            v_name, v_price, v_quantity = row.strip().split(";")
+            v_price = float(v_price)
+            v_quantity = int(v_quantity)
+            if v_name in new_warehouse:
+                print(f"WARNING: duplicate value of {v_name}")
+            new_warehouse[v_name] = {
+                "v_price": v_price,
+                "v_quantity": v_quantity
+            }
+        if new_warehouse == {}:
+            print("\nWarehouse is empty.")
+            return
+
+        print("\n\nThe list of products on Warehouse are:")
+        for v_name in new_warehouse:
+            print("{}: {} itens - Price: {}".format(v_name, new_warehouse[v_name]["v_quantity"], new_warehouse[v_name]["v_price"]))
+    file.close()
+
 
 # 'warehouse': Prompt for a product name and display its status in the warehouse.
 def f_warehouse():
@@ -226,13 +243,15 @@ def f_warehouse():
                 "v_price": v_price,
                 "v_quantity": v_quantity
             }
-            
+        if new_warehouse == {}:
+            print("\nWarehouse is empty.")
+            return    
         s_name = str(input("Insert the name of product: "))
         if (s_name not in new_warehouse):
             print("Sorry, {} not available on Warehouse.\n".format(s_name))
             return
         print("\n\nThe {} is Available in Warehouse.\nHave {} itens in Warehouse.\nAnd its price is {}\n".format(s_name, new_warehouse[s_name]["v_quantity"], new_warehouse[s_name]["v_price"]))
-    file.close()      
+    file.close()
 
 
 # 'review': Prompt for two indices 'from' and 'to', and display all recorded operations within that range. 
