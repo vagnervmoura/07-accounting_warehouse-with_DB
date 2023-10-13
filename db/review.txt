@@ -55,3 +55,15 @@
 2023/10/13 03:38;Sale product: a;1.0
 2023/10/13 03:45;Sale by 1x of product: a;2.0
 2023/10/13 03:47;Sale by 1x of product: b unit price;2.0
+2023/10/13 04:00;Sale by 3x of product: c unit price;9.0
+2023/10/13 04:02;Purchase 4x of product: d by;16.0
+2023/10/13 04:03;Purchase 2 product: d by;4.0
+2023/10/13 04:11;Sale 1 product: a by;2.0
+2023/10/13 04:11;Sale 2 product: a by;4.0
+2023/10/13 04:12;Sale 2 product: d by;8.0
+2023/10/13 04:12;Purchase 2 product: a by;4.0
+2023/10/13 04:14;Account Add;20.0
+2023/10/13 04:14;Account Add;20.0
+2023/10/13 04:15;Account Sub;77.0
+2023/10/13 04:15;Sale 2 product: d by;8.0
+2023/10/13 04:16;Purchase 4 product: d by;16.0

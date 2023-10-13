@@ -145,7 +145,6 @@ def f_sale():
             return
         new_warehouse[s_name]["v_quantity"] -= s_quantity
         total_price = new_warehouse[s_name]["v_price"] * s_quantity
-        price = new_warehouse[s_name]["v_price"]
         actual_balance += total_price
         if new_warehouse[s_name]["v_quantity"] == 0:
             del(new_warehouse[s_name])
@@ -159,9 +158,11 @@ def f_sale():
             for v_name, stats in new_warehouse.items():
                 file.write("{};{};{}\n".format(v_name, stats["v_price"], stats["v_quantity"]))
             file.close()
+
             
         """{'YYYY-MM-DD HH:MM': ["transaction", "v_value"]}"""
-        v_transaction = "Sale by "+str(s_quantity)+"x of product: "+s_name+" unit price"
+        price = total_price
+        v_transaction = "Sale "+str(s_quantity)+" product: "+s_name+" by"
         review = "db/review.txt" # Set review history to a Database File
         review_dict = {}
         with open(review, "r") as file:
@@ -232,7 +233,31 @@ def f_purchase():
         with open(warehouse, "w") as file:  # To create a new file in case it not exist and write on.
             for v_name, stats in new_warehouse.items():
                 file.write("{};{};{}\n".format(v_name, stats["v_price"], stats["v_quantity"]))
-            file.close()          
+            file.close()  
+            
+            
+        """{'YYYY-MM-DD HH:MM': ["transaction", "v_value"]}"""
+        s_name = v_name
+        price = total_price
+        s_quantity = v_quantity
+        v_transaction = "Purchase "+str(s_quantity)+" product: "+s_name+" by"
+        review = "db/review.txt" # Set review history to a Database File
+        review_dict = {}
+        with open(review, "r") as file:
+            print("PRIMEIRO")
+            for row in file:
+                date_transaction, transaction, v_value = row.strip().split(";")
+                if date_transaction not in review_dict:
+                    review_dict[date_transaction] = []
+        print(review_dict)
+        with open(review, "a") as file:
+            print("SEGUNDO")
+            date_transaction = datetime.now()
+            date_time_transaction = date_transaction.strftime('%Y/%m/%d %H:%M')
+            transaction = v_transaction
+            file.write(f"{date_time_transaction};{transaction};{price}\n")
+        file.close()  
+                
     except ValueError:
         print("Sorry, you did not input a valid value.\n")
 
