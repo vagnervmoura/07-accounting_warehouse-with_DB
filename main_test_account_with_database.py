@@ -4,8 +4,8 @@ In this exercise, you'll extend the functionality of the company account and war
 You'll implement: 
 saving and loading of: 
    V - account balance, 
-    - warehouse inventory, and 
-    - operation history 
+   V - warehouse inventory, and 
+   V - operation history 
 to/from a text file.
 
 1. You can store balance, inventory and history in separate files or in one file.
@@ -52,7 +52,8 @@ def goto(linenum):
 def f_balance(): 
     global v_balance
     global v_review
-    
+    with open(balance, "a") as file: # To create a new file in case it not exist.
+        pass     
     with open(balance, "r") as file:
         for row in file:
             actual_balance = float(row)         
@@ -66,15 +67,15 @@ def f_balance():
             if v_action == 1:
                 actual_balance += v_value
                 print("Your new balance is: {}".format(actual_balance))
-                v_review.append("Balance changed, Add {}".format(v_value))
-                v_transaction = "Account Add"
+#                v_review.append("Balance changed, Add {}".format(v_value))
+                v_transaction = "Added to Account"
                    
             elif v_action == 2:
                 if v_value <= actual_balance:
                     actual_balance -= v_value
                     print("Your new balance is: {}".format(actual_balance))
-                    v_review.append("Balance changed, Sub: {}".format(v_value))
-                    v_transaction = "Account Sub"
+#                    v_review.append("Balance changed, Sub: {}".format(v_value))
+                    v_transaction = "Withdraw from Account"
                 
                 else:
                     print("Sorry, you do not have balance enough to do this withdraw.\nYour actual balance is {}.".format(v_balance))
@@ -87,18 +88,19 @@ def f_balance():
             """{'YYYY-MM-DD HH:MM': ["transaction", "v_value"]}"""
             review = "db/review.txt" # Set review history to a Database File
             review_dict = {}
+            with open(review, "a") as file: # To create a new file in case it not exist.
+                pass 
             with open(review, "r") as file:
                 for row in file:
                     date_transaction, transaction, v_value = row.strip().split(";")
                     if date_transaction not in review_dict:
                         review_dict[date_transaction] = []
-            print(review_dict)
             with open(review, "a") as file:
                 date_transaction = datetime.now()
-                date_time_transaction = date_transaction.strftime('%Y/%m/%d %H:%M')
+                date_time_transaction = date_transaction.strftime('%Y/%m/%d %H:%M:%S')
                 transaction = v_transaction
                 file.write(f"{date_time_transaction};{transaction};{price}\n")
-            file.close()   
+                file.close()   
 
     except ValueError:
         print("Sorry {} is not a valid value.\n".format(v_value))
@@ -111,11 +113,15 @@ def f_sale():
     global v_quantity
     global v_warehouse
     global v_review
-
+    actual_balance = []
+    with open(balance, "a") as file: # To create a new file in case it not exist.
+        pass 
     with open(balance, "r") as file:
         for row in file:
             actual_balance = float(row)
-
+        if actual_balance == []:
+            print("\nYour warehouse is empty and you can not do any sale.")
+            return
     new_warehouse = {}  
     with open(warehouse, "a") as file: # To create a new file in case it not exist.
         pass 
@@ -130,11 +136,11 @@ def f_sale():
                 "v_price": v_price,
                 "v_quantity": v_quantity
             }
-    print(new_warehouse)
+        file.close()
             
     try:
         s_name = str(input("Insert the name of product: "))
-        if (s_name not in new_warehouse):# or (new_warehouse["v_quantity"] <1):
+        if (s_name not in new_warehouse):
             print("Sorry, {} not available on Warehouse.\n".format(s_name))
             return
         s_quantity = int(input("Insert the quantity of {} to sell: ".format(v_name)))
@@ -163,17 +169,16 @@ def f_sale():
         v_transaction = "Sale "+str(s_quantity)+" product: "+s_name+" by"
         review = "db/review.txt" # Set review history to a Database File
         review_dict = {}
+        with open(review, "a") as file: # To create a new file in case it not exist.
+            pass 
         with open(review, "r") as file:
-            print("PRIMEIRO")
             for row in file:
                 date_transaction, transaction, v_value = row.strip().split(";")
                 if date_transaction not in review_dict:
                     review_dict[date_transaction] = []
-        print(review_dict)
         with open(review, "a") as file:
-            print("SEGUNDO")
             date_transaction = datetime.now()
-            date_time_transaction = date_transaction.strftime('%Y/%m/%d %H:%M')
+            date_time_transaction = date_transaction.strftime('%Y/%m/%d %H:%M:%S')
             transaction = v_transaction
             file.write(f"{date_time_transaction};{transaction};{price}\n")
         file.close()  
@@ -188,11 +193,15 @@ def f_purchase():
     global v_balance
     global v_warehouse
     global v_review
-    
+    actual_balance = []
+    with open(balance, "a") as file: # To create a new file in case it not exist.
+        pass 
     with open(balance, "r") as file:
         for row in file:
             actual_balance = float(row)
-    
+        if actual_balance == []:
+            print("\nYour account is empty and you can not do any purchase.")
+            return
     new_warehouse = {}  
     with open(warehouse, "a") as file: # To create a new file in case it not exist.
         pass 
@@ -207,7 +216,7 @@ def f_purchase():
                 "v_price": v_price,
                 "v_quantity": v_quantity
             }
-    print(new_warehouse)
+        file.close()
             
     try:
         v_name = str(input("Insert the name of product: "))
@@ -239,39 +248,39 @@ def f_purchase():
         price = total_price
         s_quantity = v_quantity
         v_transaction = "Purchase "+str(s_quantity)+" product: "+s_name+" by"
-        review = "db/review.txt" # Set review history to a Database File
         review_dict = {}
+        with open(review, "a") as file: # To create a new file in case it not exist.
+            pass 
         with open(review, "r") as file:
-            print("PRIMEIRO")
             for row in file:
                 date_transaction, transaction, v_value = row.strip().split(";")
                 if date_transaction not in review_dict:
                     review_dict[date_transaction] = []
-        print(review_dict)
         with open(review, "a") as file:
-            print("SEGUNDO")
             date_transaction = datetime.now()
-            date_time_transaction = date_transaction.strftime('%Y/%m/%d %H:%M')
+            date_time_transaction = date_transaction.strftime('%Y/%m/%d %H:%M:%S')
             transaction = v_transaction
             file.write(f"{date_time_transaction};{transaction};{price}\n")
-        file.close()  
+            file.close()  
                 
     except ValueError:
         print("Sorry, you did not input a valid value.\n")
 
 # 'account': Display the current account balance.
 def f_account():
-    global v_account
-    
-    with open(balance, "r") as file:
+    global v_account 
+    actual_balance = []
+    with open(balance, "a") as file: # To create a new file in case it not exist.
+        pass 
+    with open(balance) as file:
         for row in file:
             actual_balance = float(row)
-            
-    if v_account == []:
-        print("The account is empty.\n")
-    else:
-        print("Your actual balance is: {}".format(actual_balance))
-    file.close()
+          
+        if (actual_balance == []) or (actual_balance == 0):
+            print("The account is empty.\n")
+        else:
+            print("Your actual balance is: {}".format(actual_balance))
+        file.close()
 
 # 'list': Display the total inventory in the warehouse along with product prices and quantities.
 def f_list():
@@ -296,7 +305,7 @@ def f_list():
         print("\n\nThe list of products on Warehouse are:")
         for v_name in new_warehouse:
             print("{}: {} itens - Price: {}".format(v_name, new_warehouse[v_name]["v_quantity"], new_warehouse[v_name]["v_price"]))
-    file.close()
+        file.close()
 
 
 # 'warehouse': Prompt for a product name and display its status in the warehouse.
@@ -323,7 +332,7 @@ def f_warehouse():
             print("Sorry, {} not available on Warehouse.\n".format(s_name))
             return
         print("\n\nThe {} is Available in Warehouse.\nHave {} itens in Warehouse.\nAnd its price is {}\n".format(s_name, new_warehouse[s_name]["v_quantity"], new_warehouse[s_name]["v_price"]))
-    file.close()
+        file.close()
 
 
 # 'review': Prompt for two indices 'from' and 'to', and display all recorded operations within that range. 
@@ -331,46 +340,21 @@ def f_warehouse():
 #           Handle cases where 'from' and 'to' values are out of range.
 def f_review():
     """{'YYYY-MM-DD HH:MM': ["transaction", "v_value"]}"""
-    review = "db/review.txt" # Set review history to a Database File
     review_dict = {}
-    with open(review, "r") as file:
+    with open(review, "a") as file: # To create a new file in case it not exist.
+        pass
+    with open(review) as file:
         for row in file:
-            print(row)
-            
-#            date_transaction, transaction, v_value = row.strip().split(";")
-#            transaction = str(transaction)
-#            v_value = float(v_value)
-#            review_dict[date_transaction] = {
-#                "transaction": transaction,
-#                "v_value": v_value
-#            }
-
-
-#            if date_transaction not in review_dict:
-#            review_dict[date_transaction] = []
-#            review_dict[date_transaction]
-#        print(row)
-
-#        for transaction in review_dict:
-#            print("{}: {} itens - Price: {}".format(date_transaction, review_dict[date_transaction]["transaction"], review_dict[date_transaction]["v_value"]))
-
-#    print(review_dict)
-#    with open(review, "a") as file:
-#        date_transaction = datetime.now()
-#        date_time_transaction = date_transaction.strftime('%Y/%m/%d %H:%M')
-#        transaction = v_transaction
-#        file.write(f"{date_time_transaction};{transaction};{price}\n")
-    file.close()       
-
-    
-    
-
-
-#    global v_review
-#    if v_review == []:
-#        print("The review is empty.\n")
-#    else:
-#        print(*v_review, sep = "\n")
+            date_transaction, transaction, v_value = row.strip().split(";")
+            review_dict[date_transaction] = {
+                "transaction": transaction,
+                "v_value": v_value
+            }
+        if review_dict == {}:
+            print("\nReview file is empty.\n")
+        for date_transaction in review_dict:
+            print("{} - {} - {}".format(date_transaction, review_dict[date_transaction]["transaction"], review_dict[date_transaction]["v_value"]))
+        file.close()     
 
 
 while v_option != 0:
