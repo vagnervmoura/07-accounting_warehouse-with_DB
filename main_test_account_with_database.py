@@ -88,14 +88,12 @@ def f_balance():
             review = "db/review.txt" # Set review history to a Database File
             review_dict = {}
             with open(review, "r") as file:
-                print("PRIMEIRO")
                 for row in file:
                     date_transaction, transaction, v_value = row.strip().split(";")
                     if date_transaction not in review_dict:
                         review_dict[date_transaction] = []
             print(review_dict)
             with open(review, "a") as file:
-                print("SEGUNDO")
                 date_transaction = datetime.now()
                 date_time_transaction = date_transaction.strftime('%Y/%m/%d %H:%M')
                 transaction = v_transaction
@@ -332,11 +330,47 @@ def f_warehouse():
 #           If ‘from’ and ‘to’ are empty, display all recorder operations. 
 #           Handle cases where 'from' and 'to' values are out of range.
 def f_review():
-    global v_review
-    if v_review == []:
-        print("The review is empty.\n")
-    else:
-        print(*v_review, sep = "\n")
+    """{'YYYY-MM-DD HH:MM': ["transaction", "v_value"]}"""
+    review = "db/review.txt" # Set review history to a Database File
+    review_dict = {}
+    with open(review, "r") as file:
+        for row in file:
+            print(row)
+            
+#            date_transaction, transaction, v_value = row.strip().split(";")
+#            transaction = str(transaction)
+#            v_value = float(v_value)
+#            review_dict[date_transaction] = {
+#                "transaction": transaction,
+#                "v_value": v_value
+#            }
+
+
+#            if date_transaction not in review_dict:
+#            review_dict[date_transaction] = []
+#            review_dict[date_transaction]
+#        print(row)
+
+#        for transaction in review_dict:
+#            print("{}: {} itens - Price: {}".format(date_transaction, review_dict[date_transaction]["transaction"], review_dict[date_transaction]["v_value"]))
+
+#    print(review_dict)
+#    with open(review, "a") as file:
+#        date_transaction = datetime.now()
+#        date_time_transaction = date_transaction.strftime('%Y/%m/%d %H:%M')
+#        transaction = v_transaction
+#        file.write(f"{date_time_transaction};{transaction};{price}\n")
+    file.close()       
+
+    
+    
+
+
+#    global v_review
+#    if v_review == []:
+#        print("The review is empty.\n")
+#    else:
+#        print(*v_review, sep = "\n")
 
 
 while v_option != 0:
