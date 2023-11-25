@@ -1,0 +1,1 @@
+{'a': {'v_price': 2.0, 'v_quantity': 2}, 'b': {'v_price': 3.0, 'v_quantity': 2}}

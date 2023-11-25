@@ -1,0 +1,1 @@
+['2023/11/25 17:58:53;Added to Account;1.0', '2023/11/25 17:59:48;Added to Account;3000.0', '2023/11/25 18:02:34;Purchase 2 product: a by;4.0', '2023/11/25 18:03:07;Purchase 3 product: b by;9.0', '2023/11/25 18:04:06;Sale 1 product: b by;3.0']
